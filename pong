@@ -1,165 +1,175 @@
 import turtle
 
-# Set up the screen
-screen = turtle.Screen()
-screen.title("Pong Game")
-screen.bgcolor("black")
-screen.setup(width=800, height=600)
-screen.tracer(0)
 
-# Left paddle
-left_paddle = turtle.Turtle()
-left_paddle.speed(0)
-left_paddle.shape("square")
-left_paddle.color("white")
-left_paddle.shapesize(stretch_wid=6, stretch_len=1)
-left_paddle.penup()
-left_paddle.goto(-350, 0)
+class Paddle:
+    def __init__(self, x_position):
+        self.paddle = turtle.Turtle()
+        self.paddle.speed(0)
+        self.paddle.shape("square")
+        self.paddle.color("white")
+        self.paddle.shapesize(stretch_wid=6, stretch_len=1)
+        self.paddle.penup()
+        self.paddle.goto(x_position, 0)
+        self.moving_up = False
+        self.moving_down = False
 
-# Right paddle
-right_paddle = turtle.Turtle()
-right_paddle.speed(0)
-right_paddle.shape("square")
-right_paddle.color("white")
-right_paddle.shapesize(stretch_wid=6, stretch_len=1)
-right_paddle.penup()
-right_paddle.goto(350, 0)
+    def move(self):
+        if self.moving_up and self.paddle.ycor() < 250:
+            self.paddle.sety(self.paddle.ycor() + .5)
+        if self.moving_down and self.paddle.ycor() > -240:
+            self.paddle.sety(self.paddle.ycor() - .5)
 
-# Ball
-ball = turtle.Turtle()
-ball.speed(40)
-ball.shape("circle")
-ball.color("white")
-ball.penup()
-ball.goto(0, 0)
-ball.dx = 0.1
-ball.dy = 0.1
+    def start_move_up(self):
+        self.moving_up = True
 
-# Score
-left_score = 0
-right_score = 0
+    def stop_move_up(self):
+        self.moving_up = False
 
-# Display the score
-score_display = turtle.Turtle()
-score_display.speed(0)
-score_display.color("white")
-score_display.penup()
-score_display.hideturtle()
-score_display.goto(0, 260)
-score_display.write("Player A: 0  Player B: 0", align="center", font=("Courier", 24, "normal"))
+    def start_move_down(self):
+        self.moving_down = True
+
+    def stop_move_down(self):
+        self.moving_down = False
+
+    def ycor(self):
+        return self.paddle.ycor()
+
+    def xcor(self):
+        return self.paddle.xcor()
 
 
-def update_score():
-    score_display.clear()
-    score_display.write(f"Player A: {left_score}  Player B: {right_score}",
-                        align="center", font=("Courier", 24, "normal"))
+class Ball:
+    def __init__(self):
+        self.ball = turtle.Turtle()
+        self.ball.speed(40)
+        self.ball.shape("circle")
+        self.ball.color("white")
+        self.ball.penup()
+        self.ball.goto(0, 0)
+        self.ball.dx = 0.1
+        self.ball.dy = 0.1
+
+    def move(self):
+        self.ball.setx(self.ball.xcor() + self.ball.dx)
+        self.ball.sety(self.ball.ycor() + self.ball.dy)
+
+    def bounce_y(self):
+        self.ball.dy *= -1
+
+    def bounce_x(self):
+        self.ball.dx *= -1
+
+    def reset_position(self):
+        self.ball.goto(0, 0)
+        self.bounce_x()
+
+    def xcor(self):
+        return self.ball.xcor()
+
+    def ycor(self):
+        return self.ball.ycor()
+
+    def setx(self, x):
+        self.ball.setx(x)
+
+    def sety(self, y):
+        self.ball.sety(y)
 
 
-# Paddle movement flags
-left_paddle_up_pressed = False
-left_paddle_down_pressed = False
-right_paddle_up_pressed = False
-right_paddle_down_pressed = False
+class Scoreboard:
+    def __init__(self):
+        self.left_score = 0
+        self.right_score = 0
+        self.display = turtle.Turtle()
+        self.display.speed(0)
+        self.display.color("white")
+        self.display.penup()
+        self.display.hideturtle()
+        self.display.goto(0, 260)
+        self.update_score()
 
-# Paddle movement handlers
-def press_left_paddle_up():
-    global left_paddle_up_pressed
-    left_paddle_up_pressed = True
+    def update_score(self):
+        self.display.clear()
+        self.display.write(f"Player A: {self.left_score}  Player B: {self.right_score}",
+                           align="center", font=("Courier", 24, "normal"))
 
+    def increase_left_score(self):
+        self.left_score += 1
+        self.update_score()
 
-def release_left_paddle_up():
-    global left_paddle_up_pressed
-    left_paddle_up_pressed = False
-
-
-def press_left_paddle_down():
-    global left_paddle_down_pressed
-    left_paddle_down_pressed = True
-
-
-def release_left_paddle_down():
-    global left_paddle_down_pressed
-    left_paddle_down_pressed = False
-
-
-def press_right_paddle_up():
-    global right_paddle_up_pressed
-    right_paddle_up_pressed = True
+    def increase_right_score(self):
+        self.right_score += 1
+        self.update_score()
 
 
-def release_right_paddle_up():
-    global right_paddle_up_pressed
-    right_paddle_up_pressed = False
+class PongGame:
+    def __init__(self):
+        self.screen = turtle.Screen()
+        self.screen.title("Pong Game")
+        self.screen.bgcolor("black")
+        self.screen.setup(width=800, height=600)
+        self.screen.tracer(0)
+
+        self.left_paddle = Paddle(-350)
+        self.right_paddle = Paddle(350)
+        self.ball = Ball()
+        self.scoreboard = Scoreboard()
+
+        self.screen.listen()
+        self.screen.onkeypress(self.left_paddle.start_move_up, "w")
+        self.screen.onkeyrelease(self.left_paddle.stop_move_up, "w")
+        self.screen.onkeypress(self.left_paddle.start_move_down, "s")
+        self.screen.onkeyrelease(self.left_paddle.stop_move_down, "s")
+        self.screen.onkeypress(self.right_paddle.start_move_up, "Up")
+        self.screen.onkeyrelease(self.right_paddle.stop_move_up, "Up")
+        self.screen.onkeypress(self.right_paddle.start_move_down, "Down")
+        self.screen.onkeyrelease(self.right_paddle.stop_move_down, "Down")
+
+    def play(self):
+        while True:
+            self.screen.update()
+
+            # Move paddles
+            self.left_paddle.move()
+            self.right_paddle.move()
+
+            # Move the ball
+            self.ball.move()
+
+            # Ball collision with top wall
+            if self.ball.ycor() > 290:
+                self.ball.sety(290)
+                self.ball.bounce_y()
+
+            # Ball collision with bottom wall
+            if self.ball.ycor() < -290:
+                self.ball.sety(-290)
+                self.ball.bounce_y()
+
+            # Ball collision with right paddle
+            if (340 < self.ball.xcor() < 350) and \
+               (self.right_paddle.ycor() - 50 < self.ball.ycor() < self.right_paddle.ycor() + 50):
+                self.ball.setx(340)
+                self.ball.bounce_x()
+
+            # Ball collision with left paddle
+            if (-350 < self.ball.xcor() < -340) and \
+               (self.left_paddle.ycor() - 50 < self.ball.ycor() < self.left_paddle.ycor() + 50):
+                self.ball.setx(-340)
+                self.ball.bounce_x()
+
+            # Ball out of bounds (right side)
+            if self.ball.xcor() > 390:
+                self.scoreboard.increase_left_score()
+                self.ball.reset_position()
+
+            # Ball out of bounds (left side)
+            if self.ball.xcor() < -390:
+                self.scoreboard.increase_right_score()
+                self.ball.reset_position()
 
 
-def press_right_paddle_down():
-    global right_paddle_down_pressed
-    right_paddle_down_pressed = True
-
-
-def release_right_paddle_down():
-    global right_paddle_down_pressed
-    right_paddle_down_pressed = False
-
-
-# Keyboard bindings
-screen.listen()
-screen.onkeypress(press_left_paddle_up, "w")
-screen.onkeyrelease(release_left_paddle_up, "w")
-screen.onkeypress(press_left_paddle_down, "s")
-screen.onkeyrelease(release_left_paddle_down, "s")
-screen.onkeypress(press_right_paddle_up, "Up")
-screen.onkeyrelease(release_right_paddle_up, "Up")
-screen.onkeypress(press_right_paddle_down, "Down")
-screen.onkeyrelease(release_right_paddle_down, "Down")
-
-# Main game loop
-while True:
-    screen.update()
-
-    # Continuous paddle movement
-    if left_paddle_up_pressed and left_paddle.ycor() < 250:
-        left_paddle.sety(left_paddle.ycor() + .5)
-    if left_paddle_down_pressed and left_paddle.ycor() > -240:
-        left_paddle.sety(left_paddle.ycor() - .5)
-    if right_paddle_up_pressed and right_paddle.ycor() < 250:
-        right_paddle.sety(right_paddle.ycor() + .5)
-    if right_paddle_down_pressed and right_paddle.ycor() > -240:
-        right_paddle.sety(right_paddle.ycor() - .5)
-
-    # Move the ball
-    ball.setx(ball.xcor() + ball.dx)
-    ball.sety(ball.ycor() + ball.dy)
-
-    # Ball collision with top wall
-    if ball.ycor() > 290:
-        ball.sety(290)
-        ball.dy *= -1
-
-    # Ball collision with bottom wall
-    if ball.ycor() < -290:
-        ball.sety(-290)
-        ball.dy *= -1
-
-    # Ball collision with paddles
-    if (350 > ball.xcor() > 340) and (right_paddle.ycor() - 50 < ball.ycor() < right_paddle.ycor() + 50):
-        ball.setx(340)
-        ball.dx *= -1
-
-    if (-350 < ball.xcor() < -340) and (left_paddle.ycor() - 50 < ball.ycor() < left_paddle.ycor() + 50):
-        ball.setx(-340)
-        ball.dx *= -1
-
-    # Ball out of bounds (right side)
-    if ball.xcor() > 390:
-        ball.goto(0, 0)
-        ball.dx *= -1
-        left_score += 1
-        update_score()
-
-    # Ball out of bounds (left side)
-    if ball.xcor() < -390:
-        ball.goto(0, 0)
-        ball.dx *= -1
-        right_score += 1
-        update_score()
+# Run the game
+if __name__ == "__main__":
+    game = PongGame()
+    game.play()
