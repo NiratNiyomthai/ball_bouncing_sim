@@ -1,23 +1,31 @@
 import turtle
-
+import random
 
 class Paddle:
-    def __init__(self, x_position):
+    def __init__(self, x_position, y_position, up_key, down_key, color, screen):
         self.paddle = turtle.Turtle()
         self.paddle.speed(0)
         self.paddle.shape("square")
-        self.paddle.color("white")
-        self.paddle.shapesize(stretch_wid=6, stretch_len=1)
+        self.paddle.color(color)
+        self.paddle.shapesize(stretch_wid=2, stretch_len=1)
         self.paddle.penup()
-        self.paddle.goto(x_position, 0)
+        self.paddle.goto(x_position, y_position)
         self.moving_up = False
         self.moving_down = False
+        self.up_key = up_key
+        self.down_key = down_key
+
+        # Keybindings for this paddle
+        screen.onkeypress(self.start_move_up, self.up_key)
+        screen.onkeyrelease(self.stop_move_up, self.up_key)
+        screen.onkeypress(self.start_move_down, self.down_key)
+        screen.onkeyrelease(self.stop_move_down, self.down_key)
 
     def move(self):
-        if self.moving_up and self.paddle.ycor() < 250:
-            self.paddle.sety(self.paddle.ycor() + .5)
-        if self.moving_down and self.paddle.ycor() > -240:
-            self.paddle.sety(self.paddle.ycor() - .5)
+        if self.moving_up and self.paddle.ycor() < 290:
+            self.paddle.sety(self.paddle.ycor() + 0.5)
+        if self.moving_down and self.paddle.ycor() > -290:
+            self.paddle.sety(self.paddle.ycor() - 0.5)
 
     def start_move_up(self):
         self.moving_up = True
@@ -37,17 +45,16 @@ class Paddle:
     def xcor(self):
         return self.paddle.xcor()
 
-
 class Ball:
-    def __init__(self):
+    def __init__(self, x_start, y_start, dx, dy):
         self.ball = turtle.Turtle()
         self.ball.speed(40)
         self.ball.shape("circle")
         self.ball.color("white")
         self.ball.penup()
-        self.ball.goto(0, 0)
-        self.ball.dx = 0.1
-        self.ball.dy = 0.1
+        self.ball.goto(x_start, y_start)
+        self.ball.dx = dx
+        self.ball.dy = dy
 
     def move(self):
         self.ball.setx(self.ball.xcor() + self.ball.dx)
@@ -75,99 +82,116 @@ class Ball:
     def sety(self, y):
         self.ball.sety(y)
 
-
-class Scoreboard:
-    def __init__(self):
-        self.left_score = 0
-        self.right_score = 0
-        self.display = turtle.Turtle()
-        self.display.speed(0)
-        self.display.color("white")
-        self.display.penup()
-        self.display.hideturtle()
-        self.display.goto(0, 260)
-        self.update_score()
-
-    def update_score(self):
-        self.display.clear()
-        self.display.write(f"Player A: {self.left_score}  Player B: {self.right_score}",
-                           align="center", font=("Courier", 24, "normal"))
-
-    def increase_left_score(self):
-        self.left_score += 1
-        self.update_score()
-
-    def increase_right_score(self):
-        self.right_score += 1
-        self.update_score()
-
-
 class PongGame:
     def __init__(self):
         self.screen = turtle.Screen()
-        self.screen.title("Pong Game")
+        self.screen.title("8-Player Pong Game")
         self.screen.bgcolor("black")
         self.screen.setup(width=800, height=600)
         self.screen.tracer(0)
 
-        self.left_paddle = Paddle(-350)
-        self.right_paddle = Paddle(350)
-        self.ball = Ball()
-        self.scoreboard = Scoreboard()
+        self.paddles = []
+        self.balls = []
+        self.left_score = 0
+        self.right_score = 0
+        self.score_display = self.create_score_display()
+
+        self.create_paddles()
+        self.create_balls()
 
         self.screen.listen()
-        self.screen.onkeypress(self.left_paddle.start_move_up, "w")
-        self.screen.onkeyrelease(self.left_paddle.stop_move_up, "w")
-        self.screen.onkeypress(self.left_paddle.start_move_down, "s")
-        self.screen.onkeyrelease(self.left_paddle.stop_move_down, "s")
-        self.screen.onkeypress(self.right_paddle.start_move_up, "Up")
-        self.screen.onkeyrelease(self.right_paddle.stop_move_up, "Up")
-        self.screen.onkeypress(self.right_paddle.start_move_down, "Down")
-        self.screen.onkeyrelease(self.right_paddle.stop_move_down, "Down")
+
+    def create_paddles(self):
+        # Left paddles (blue)
+        self.paddles.append(Paddle(-350, 200, "w", "s", "blue", self.screen))
+        self.paddles.append(Paddle(-350, 100, "e", "d", "blue", self.screen))
+        self.paddles.append(Paddle(-350, 0, "r", "f", "blue", self.screen))
+        self.paddles.append(Paddle(-350, -100, "t", "g", "blue", self.screen))
+
+        # Right paddles (red)
+        self.paddles.append(Paddle(350, 200, "i", "k", "red", self.screen))
+        self.paddles.append(Paddle(350, 100, "o", "l", "red", self.screen))
+        self.paddles.append(Paddle(350, 0, "p", ";", "red", self.screen))
+        self.paddles.append(Paddle(350, -100, "[", "'", "red", self.screen))
+
+    def create_balls(self):
+        for _ in range(10):
+            x_start = random.randint(-100, 100)
+            y_start = random.randint(-100, 100)
+            dx = random.choice([-0.15, 0.15])
+            dy = random.choice([-0.15, 0.15])
+            ball = Ball(x_start, y_start, dx, dy)
+            self.balls.append(ball)
+
+    def create_score_display(self):
+        score_display = turtle.Turtle()
+        score_display.speed(0)
+        score_display.color("white")
+        score_display.penup()
+        score_display.hideturtle()
+        score_display.goto(0, 260)
+        score_display.write("Left: 0  Right: 0", align="center", font=("Courier", 24, "normal"))
+        return score_display
+
+    def update_score(self):
+        self.score_display.clear()
+        self.score_display.write(f"Left: {self.left_score}  Right: {self.right_score}",
+                                 align="center", font=("Courier", 24, "normal"))
+
+    def display_special_text(self, side):
+        special_text = turtle.Turtle()
+        special_text.speed(0)
+        special_text.color("yellow")
+        special_text.penup()
+        special_text.hideturtle()
+        special_text.goto(0, 0)
+        special_text.write(f"{side} Team achieved 10 Points!", align="center", font=("Courier", 24, "bold"))
+        self.screen.update()
+        self.screen.ontimer(special_text.clear, 1000)
 
     def play(self):
         while True:
             self.screen.update()
 
             # Move paddles
-            self.left_paddle.move()
-            self.right_paddle.move()
+            for paddle in self.paddles:
+                paddle.move()
 
-            # Move the ball
-            self.ball.move()
+            # Move balls
+            for ball in self.balls:
+                ball.move()
 
-            # Ball collision with top wall
-            if self.ball.ycor() > 290:
-                self.ball.sety(290)
-                self.ball.bounce_y()
+                # Ball collision with top wall
+                if ball.ycor() > 290:
+                    ball.sety(290)
+                    ball.bounce_y()
 
-            # Ball collision with bottom wall
-            if self.ball.ycor() < -290:
-                self.ball.sety(-290)
-                self.ball.bounce_y()
+                # Ball collision with bottom wall
+                if ball.ycor() < -290:
+                    ball.sety(-290)
+                    ball.bounce_y()
 
-            # Ball collision with right paddle
-            if (340 < self.ball.xcor() < 350) and \
-               (self.right_paddle.ycor() - 50 < self.ball.ycor() < self.right_paddle.ycor() + 50):
-                self.ball.setx(340)
-                self.ball.bounce_x()
+                # Ball collision with paddles
+                for paddle in self.paddles:
+                    if abs(ball.xcor() - paddle.xcor()) < 10 and \
+                            (paddle.ycor() - 30 < ball.ycor() < paddle.ycor() + 30):
+                        ball.bounce_x()
 
-            # Ball collision with left paddle
-            if (-350 < self.ball.xcor() < -340) and \
-               (self.left_paddle.ycor() - 50 < self.ball.ycor() < self.left_paddle.ycor() + 50):
-                self.ball.setx(-340)
-                self.ball.bounce_x()
+                # Ball out of bounds (right side)
+                if ball.xcor() > 390:
+                    self.left_score += 1
+                    self.update_score()
+                    ball.reset_position()
+                    if self.left_score % 10 == 0:
+                        self.display_special_text("Left")
 
-            # Ball out of bounds (right side)
-            if self.ball.xcor() > 390:
-                self.scoreboard.increase_left_score()
-                self.ball.reset_position()
-
-            # Ball out of bounds (left side)
-            if self.ball.xcor() < -390:
-                self.scoreboard.increase_right_score()
-                self.ball.reset_position()
-
+                # Ball out of bounds (left side)
+                if ball.xcor() < -390:
+                    self.right_score += 1
+                    self.update_score()
+                    ball.reset_position()
+                    if self.right_score % 10 == 0:
+                        self.display_special_text("Right")
 
 # Run the game
 if __name__ == "__main__":
