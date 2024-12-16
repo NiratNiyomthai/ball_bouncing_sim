@@ -9,27 +9,32 @@ There will be a notification for every 10 points a side scores.
 
 Left side
 
-W-S 
+Up - Down
 
-E-D 
+W - S 
 
-R-F 
+E - D 
 
-T-G 
+R - F 
+
+T - G 
 
 
 Right side
 
-I-K 
+Up - Down
 
-O-L 
+I - K 
 
-P-: 
+O - L 
 
-[-' 
+P - : 
 
-# MODIFICATIONS
+[ - ' 
+
+# HOW TO MODIFY
 Amount of balls: 
+
 Line 117-118
 ~~~
 def create_balls(self):
@@ -38,6 +43,7 @@ def create_balls(self):
 Modify the value in range.
 
 Paddle Speed:
+
 Line 24-28
 ~~~
 def move(self):
@@ -49,6 +55,7 @@ def move(self):
 Modify the value in self.paddle.set; 0.5 is the default. Too high of a value and the paddles will teleport from the top to bottom.
           
 Keybinds:
+
 Line 104-115
 ~~~
 def create_paddles(self):
