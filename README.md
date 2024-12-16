@@ -8,37 +8,44 @@ There will be a notification for every 10 points a side scores.
 # CONTROLS
 
 Left side
-W-S
-E-D
-R-F
-T-G
+
+W-S \n
+E-D \n
+R-F \n
+T-G \n
 
 Right side
-I-K
-O-L
-P-:
-[-'
+
+I-K \n
+O-L \n
+P-: \n
+[-' \n
 
 # MODIFICATIONS
-Amount of balls:
+Amount of balls: \n
 Line 117-118
+~~~
 def create_balls(self):
         for _ in range(10):
+ ~~~       
 Modify the value in range.
 
 Paddle Speed:
 Line 24-28
+~~~
 def move(self):
         if self.moving_up and self.paddle.ycor() < 290:
             self.paddle.sety(self.paddle.ycor() + 0.5)
         if self.moving_down and self.paddle.ycor() > -290:
             self.paddle.sety(self.paddle.ycor() - 0.5)
-
+~~~
 Modify the value in self.paddle.set; 0.5 is the default. Too high of a value and the paddles will teleport from the top to bottom.
           
 Keybinds:
 Line 104-115
+~~~
 def create_paddles(self):
+       
         # Left paddles (blue)
         self.paddles.append(Paddle(-350, 200, "w", "s", "blue", self.screen))
         self.paddles.append(Paddle(-350, 100, "e", "d", "blue", self.screen))
@@ -50,7 +57,7 @@ def create_paddles(self):
         self.paddles.append(Paddle(350, 100, "o", "l", "red", self.screen))
         self.paddles.append(Paddle(350, 0, "p", ";", "red", self.screen))
         self.paddles.append(Paddle(350, -100, "[", "'", "red", self.screen))
-
+~~~
 Modify the letters for each paddle to the desired key. The first one will be up, the second will be down.
 
 Have fun!
