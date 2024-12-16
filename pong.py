@@ -130,12 +130,12 @@ class PongGame:
         score_display.penup()
         score_display.hideturtle()
         score_display.goto(0, 260)
-        score_display.write("Left: 0  Right: 0", align="center", font=("Courier", 24, "normal"))
+        score_display.write("Blue: 0  Red: 0", align="center", font=("Courier", 24, "normal"))
         return score_display
 
     def update_score(self):
         self.score_display.clear()
-        self.score_display.write(f"Left: {self.left_score}  Right: {self.right_score}",
+        self.score_display.write(f"Blue: {self.left_score}  Red: {self.right_score}",
                                  align="center", font=("Courier", 24, "normal"))
 
     def display_special_text(self, side):
@@ -183,7 +183,7 @@ class PongGame:
                     self.update_score()
                     ball.reset_position()
                     if self.left_score % 10 == 0:
-                        self.display_special_text("Left")
+                        self.display_special_text("Blue")
 
                 # Ball out of bounds (left side)
                 if ball.xcor() < -390:
@@ -191,7 +191,7 @@ class PongGame:
                     self.update_score()
                     ball.reset_position()
                     if self.right_score % 10 == 0:
-                        self.display_special_text("Right")
+                        self.display_special_text("Red")
 
 # Run the game
 if __name__ == "__main__":
