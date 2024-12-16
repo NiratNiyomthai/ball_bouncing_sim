@@ -7,7 +7,7 @@ There will be a notification for every 10 points a side scores.
 
 # CONTROLS
 
-Left side
+Blue side
 
 Up - Down
 
@@ -20,7 +20,7 @@ R - F
 T - G 
 
 
-Right side
+Red side
 
 Up - Down
 
