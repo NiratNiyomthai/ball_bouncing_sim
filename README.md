@@ -5,6 +5,11 @@ Contains 10 balls.
 Recommended to play with friends. Post-game effects may include anger and violence.
 There will be a notification for every 10 points a side scores.
 
+# HOW TO RUN
+Download pong.py and run it in an editor.
+The editor will need to be able to run Python and you must be connected to the internet.
+
+
 # CONTROLS
 
 Blue side
@@ -74,4 +79,7 @@ def create_paddles(self):
 ~~~
 Modify the letters for each paddle to the desired key. The first one will be up, the second will be down.
 
+
+
+Sophistication level: 80
 Have fun!
