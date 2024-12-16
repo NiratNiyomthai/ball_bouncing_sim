@@ -37,6 +37,21 @@ P - :
 
 [ - ' 
 
+# VIDEO DEMO
+
+https://youtu.be/W3MBuugvs_A
+
+
+# UML DIAGRAM
+
+
+![Screenshot 2024-12-16 170303](https://github.com/user-attachments/assets/599dce8b-f210-494b-8c61-190f0a24cb23)
+
+
+
+
+
+
 # HOW TO MODIFY
 Amount of balls: 
 
