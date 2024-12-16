@@ -9,20 +9,27 @@ There will be a notification for every 10 points a side scores.
 
 Left side
 
-W-S \n
-E-D \n
-R-F \n
-T-G \n
+W-S 
+
+E-D 
+
+R-F 
+
+T-G 
+
 
 Right side
 
-I-K \n
-O-L \n
-P-: \n
-[-' \n
+I-K 
+
+O-L 
+
+P-: 
+
+[-' 
 
 # MODIFICATIONS
-Amount of balls: \n
+Amount of balls: 
 Line 117-118
 ~~~
 def create_balls(self):
