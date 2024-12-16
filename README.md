@@ -1,4 +1,56 @@
-# ball_bouncing_sim
+# 8 Player Pong
 
-- Starting procedural-style code for ball bouncing simulation
-- Students are to convert it into object-oriented style code that produces the same result
+An endless 8 player pong game with two teams and a point counter.
+Contains 10 balls.
+Recommended to play with friends. Post-game effects may include anger and violence.
+There will be a notification for every 10 points a side scores.
+
+# CONTROLS
+
+Left side
+W-S
+E-D
+R-F
+T-G
+
+Right side
+I-K
+O-L
+P-:
+[-'
+
+# MODIFICATIONS
+Amount of balls:
+Line 117-118
+def create_balls(self):
+        for _ in range(10):
+Modify the value in range.
+
+Paddle Speed:
+Line 24-28
+def move(self):
+        if self.moving_up and self.paddle.ycor() < 290:
+            self.paddle.sety(self.paddle.ycor() + 0.5)
+        if self.moving_down and self.paddle.ycor() > -290:
+            self.paddle.sety(self.paddle.ycor() - 0.5)
+
+Modify the value in self.paddle.set; 0.5 is the default. Too high of a value and the paddles will teleport from the top to bottom.
+          
+Keybinds:
+Line 104-115
+def create_paddles(self):
+        # Left paddles (blue)
+        self.paddles.append(Paddle(-350, 200, "w", "s", "blue", self.screen))
+        self.paddles.append(Paddle(-350, 100, "e", "d", "blue", self.screen))
+        self.paddles.append(Paddle(-350, 0, "r", "f", "blue", self.screen))
+        self.paddles.append(Paddle(-350, -100, "t", "g", "blue", self.screen))
+
+        # Right paddles (red)
+        self.paddles.append(Paddle(350, 200, "i", "k", "red", self.screen))
+        self.paddles.append(Paddle(350, 100, "o", "l", "red", self.screen))
+        self.paddles.append(Paddle(350, 0, "p", ";", "red", self.screen))
+        self.paddles.append(Paddle(350, -100, "[", "'", "red", self.screen))
+
+Modify the letters for each paddle to the desired key. The first one will be up, the second will be down.
+
+Have fun!
